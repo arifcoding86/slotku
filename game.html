@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Arif Slot - Game</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .slot-container {
+      display: grid;
+      grid-template-columns: repeat(3, 90px);
+      gap: 15px;
+      justify-content: center;
+      margin: 30px 0;
+    }
+    .slot {
+      width: 90px;
+      height: 90px;
+      background: #2d3436;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: pop 0.3s ease-in-out;
+    }
+    .slot img {
+      max-width: 60%;
+    }
+    @keyframes pop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="login-body">
+  <div class="login-card">
+    <h1 class="app-title">🎰 Arif Slot</h1>
+    <div>Saldo: <span id="balance">1000</span></div>
+    <div class="slot-container" id="slotGrid"></div>
+    <button onclick="spin()">🎲 SPIN</button>
+    <audio id="bgm" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" autoplay loop></audio>
+    <div class="admin-contact">💬 Chat Admin 081212399614</div>
+  </div>
+
+  <script>
+    const symbols = [
+      "https://cdn-icons-png.flaticon.com/512/1043/1043903.png", // emas
+      "https://cdn-icons-png.flaticon.com/512/1043/1043906.png", // berlian
+      "https://cdn-icons-png.flaticon.com/512/1043/1043911.png", // mahkota
+      "https://cdn-icons-png.flaticon.com/512/135/135620.png",    // ikan
+      "https://cdn-icons-png.flaticon.com/512/590/590685.png",    // semangka
+      "https://cdn-icons-png.flaticon.com/512/590/590684.png",    // pisang
+      "https://cdn-icons-png.flaticon.com/512/590/590682.png",    // apel
+      "https://cdn-icons-png.flaticon.com/512/590/590681.png",    // anggur
+      "https://cdn-icons-png.flaticon.com/512/3909/3909444.png"   // ratu
+    ];
+
+    const grid = document.getElementById("slotGrid");
+    const balanceEl = document.getElementById("balance");
+
+    function spin() {
+      grid.innerHTML = "";
+      let win = false;
+      let newSymbols = [];
+
+      for (let i = 0; i < 9; i++) {
+        const img = document.createElement("img");
+        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+        img.src = symbol;
+        const cell = document.createElement("div");
+        cell.className = "slot";
+        cell.appendChild(img);
+        grid.appendChild(cell);
+        newSymbols.push(symbol);
+      }
+
+      // Simple win check (tengah horizontal)
+      if (newSymbols[3] === newSymbols[4] && newSymbols[4] === newSymbols[5]) {
+        win = true;
+        balanceEl.textContent = parseInt(balanceEl.textContent) + 500;
+        alert("🎉 Menang! +500 saldo");
+      } else {
+        balanceEl.textContent = parseInt(balanceEl.textContent) - 100;
+      }
+
+      new Audio("https://www.soundjay.com/button/button-3.mp3").play();
+    }
+
+    window.onload = () => {
+      if (!localStorage.getItem("loggedInUser")) {
+        window.location.href = "index.html";
+      }
+    };
+  </script>
+</body>
+</html>
