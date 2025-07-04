@@ -1,95 +1,353 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Arif Slot - Game</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ARIF SLOT GACOR 3x3</title>
   <style>
-    .slot-container {
-      display: grid;
-      grid-template-columns: repeat(3, 90px);
-      gap: 15px;
-      justify-content: center;
-      margin: 30px 0;
+    body {
+      background: #111;
+      color: #ffd700;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
     }
+
+    .container {
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .saldo {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
     .slot {
-      width: 90px;
-      height: 90px;
-      background: #2d3436;
+      width: 80px;
+      height: 80px;
+      background-color: #222;
+      border: 2px solid #444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
       border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+    }
+
+    .slot.spin {
+      animation: spin 0.8s ease;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotateX(0deg); }
+      100% { transform: rotateX(360deg); }
+    }
+
+    .bet-spin-group {
       display: flex;
       justify-content: center;
       align-items: center;
-      animation: pop 0.3s ease-in-out;
+      gap: 10px;
+      margin: 10px 0;
     }
-    .slot img {
-      max-width: 60%;
+
+    .bet-spin-group input {
+      padding: 8px 10px;
+      font-size: 16px;
+      width: 100px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
-    @keyframes pop {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+
+    button {
+      background: gold;
+      color: #000;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: orange;
+    }
+
+    .pesan {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    .admin-panel {
+      font-size: 14px;
+      color: #fff;
+      margin: 10px 0;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      color: gold;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .modal input {
+      padding: 10px;
+      margin: 5px 0;
+      width: 80%;
+      border-radius: 8px;
+      border: none;
+      text-align: center;
+    }
+
+    .modal button {
+      margin: 5px;
+    }
+
+    .win-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.8);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      animation: fadein 0.3s ease;
+    }
+
+    .win-content {
+      text-align: center;
+      color: gold;
+    }
+
+    .win-content img {
+      width: 150px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
-<body class="login-body">
-  <div class="login-card">
-    <h1 class="app-title">🎰 Arif Slot</h1>
-    <div>Saldo: <span id="balance">1000</span></div>
-    <div class="slot-container" id="slotGrid"></div>
-    <button onclick="spin()">🎲 SPIN</button>
-    <audio id="bgm" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" autoplay loop></audio>
-    <div class="admin-contact">💬 Chat Admin 081212399614</div>
+<body>
+  <div class="container">
+    <h1>🎰 ARIF SLOT GACOR</h1>
+    <div class="saldo">Saldo: <span id="saldo"></span></div>
+
+    <div class="admin-panel">
+      <label><input type="checkbox" id="forceWin"> Paksa Menang</label>
+      <select id="winType">
+        <option value="any">Acak</option>
+        <option value="diamond">3 💎</option>
+        <option value="crown">3 👑</option>
+        <option value="grape">3 🍇</option>
+        <option value="cherry">3 🍒</option>
+      </select>
+    </div>
+
+    <div class="slot-grid" id="slotGrid">
+      <div class="slot" id="s1"></div>
+      <div class="slot" id="s2"></div>
+      <div class="slot" id="s3"></div>
+      <div class="slot" id="s4"></div>
+      <div class="slot" id="s5"></div>
+      <div class="slot" id="s6"></div>
+      <div class="slot" id="s7"></div>
+      <div class="slot" id="s8"></div>
+      <div class="slot" id="s9"></div>
+    </div>
+
+    <div class="bet-spin-group">
+      <label for="bet">Bet:</label>
+      <input type="text" id="bet" value="10.000" oninput="formatBet(this)">
+      <button onclick="spin()">SPIN</button>
+    </div>
+
+    <div class="pesan" id="pesan"></div>
+    <button onclick="toggleModal()">💰 Deposit / Withdraw</button>
+  </div>
+
+  <!-- MODAL DEPOSIT/WITHDRAW -->
+  <div class="modal" id="modalDepoWD">
+    <div class="modal-content">
+      <h3>💳 Deposit & Withdraw</h3>
+      <input type="text" id="jumlahDeposit" placeholder="Jumlah Deposit (Rp)">
+      <button onclick="deposit()">Deposit</button><br>
+      <input type="text" id="jumlahWD" placeholder="Jumlah Withdraw (Rp)">
+      <button onclick="withdraw()">Withdraw</button><br>
+      <button onclick="toggleModal()">❌ Tutup</button>
+    </div>
+  </div>
+
+  <!-- WIN POPUP -->
+  <div class="win-popup" id="winPopup">
+    <div class="win-content">
+      <img src="https://media.tenor.com/l2RkLVmVPcMAAAAC/jackpot.gif" alt="Menang!">
+      <h2 id="winText">🎉 Kamu Menang!</h2>
+    </div>
   </div>
 
   <script>
-    const symbols = [
-      "https://cdn-icons-png.flaticon.com/512/1043/1043903.png", // emas
-      "https://cdn-icons-png.flaticon.com/512/1043/1043906.png", // berlian
-      "https://cdn-icons-png.flaticon.com/512/1043/1043911.png", // mahkota
-      "https://cdn-icons-png.flaticon.com/512/135/135620.png",    // ikan
-      "https://cdn-icons-png.flaticon.com/512/590/590685.png",    // semangka
-      "https://cdn-icons-png.flaticon.com/512/590/590684.png",    // pisang
-      "https://cdn-icons-png.flaticon.com/512/590/590682.png",    // apel
-      "https://cdn-icons-png.flaticon.com/512/590/590681.png",    // anggur
-      "https://cdn-icons-png.flaticon.com/512/3909/3909444.png"   // ratu
-    ];
+    const simbol = ['🍒', '🍋', '🍉', '💎', '👑', '🍇'];
+    let saldo = 100000;
 
-    const grid = document.getElementById("slotGrid");
-    const balanceEl = document.getElementById("balance");
-
-    function spin() {
-      grid.innerHTML = "";
-      let win = false;
-      let newSymbols = [];
-
-      for (let i = 0; i < 9; i++) {
-        const img = document.createElement("img");
-        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
-        img.src = symbol;
-        const cell = document.createElement("div");
-        cell.className = "slot";
-        cell.appendChild(img);
-        grid.appendChild(cell);
-        newSymbols.push(symbol);
-      }
-
-      // Simple win check (tengah horizontal)
-      if (newSymbols[3] === newSymbols[4] && newSymbols[4] === newSymbols[5]) {
-        win = true;
-        balanceEl.textContent = parseInt(balanceEl.textContent) + 500;
-        alert("🎉 Menang! +500 saldo");
-      } else {
-        balanceEl.textContent = parseInt(balanceEl.textContent) - 100;
-      }
-
-      new Audio("https://www.soundjay.com/button/button-3.mp3").play();
+    function updateSaldo() {
+      document.getElementById("saldo").innerText = "Rp " + saldo.toLocaleString('id-ID');
     }
 
-    window.onload = () => {
-      if (!localStorage.getItem("loggedInUser")) {
-        window.location.href = "index.html";
+    function formatBet(input) {
+      let angka = input.value.replace(/\D/g, '');
+      input.value = parseInt(angka || 0).toLocaleString('id-ID');
+    }
+
+    function toggleModal() {
+      const modal = document.getElementById("modalDepoWD");
+      modal.style.display = modal.style.display === "flex" ? "none" : "flex";
+    }
+
+    function deposit() {
+      const input = document.getElementById("jumlahDeposit");
+      const nilai = parseInt(input.value.replace(/\D/g, '')) || 0;
+      if (nilai <= 0) return alert("Masukkan nominal valid!");
+      saldo += nilai;
+      updateSaldo();
+      alert(`✅ Deposit Rp ${nilai.toLocaleString('id-ID')} berhasil!`);
+      input.value = "";
+    }
+
+    function withdraw() {
+      const input = document.getElementById("jumlahWD");
+      const nilai = parseInt(input.value.replace(/\D/g, '')) || 0;
+      if (nilai <= 0) return alert("Masukkan nominal valid!");
+      if (saldo < nilai) return alert("Saldo tidak cukup!");
+      saldo -= nilai;
+      updateSaldo();
+      alert(`✅ Withdraw Rp ${nilai.toLocaleString('id-ID')} berhasil!`);
+      input.value = "";
+    }
+
+    function showWinPopup(teks) {
+      const popup = document.getElementById("winPopup");
+      const winText = document.getElementById("winText");
+      winText.innerText = teks;
+      popup.style.display = "flex";
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 3000);
+    }
+
+    function buildForcedWin(type) {
+      let sym = simbol[Math.floor(Math.random() * simbol.length)];
+      if (type === 'diamond') sym = '💎';
+      if (type === 'crown') sym = '👑';
+      if (type === 'grape') sym = '🍇';
+      if (type === 'cherry') sym = '🍒';
+      if (type === 'any') sym = simbol[Math.floor(Math.random() * simbol.length)];
+      const arr = Array(9).fill(sym);
+      for (let i = 1; i <= 9; i++) {
+        document.getElementById("s" + i).innerText = sym;
+        document.getElementById("s" + i).classList.remove("spin");
       }
-    };
+      return arr;
+    }
+
+    function cekMenang(data, bet) {
+      const garisMenang = [
+        [0,1,2], [3,4,5], [6,7,8],
+        [0,3,6], [1,4,7], [2,5,8],
+        [0,4,8], [2,4,6]
+      ];
+      let menang = false;
+      let hadiah = 0;
+      const pesan = document.getElementById("pesan");
+      for (const [a, b, c] of garisMenang) {
+        if (data[a] === data[b] && data[b] === data[c]) {
+          menang = true;
+          hadiah = data[a] === '💎' ? bet * 10 : bet * 2;
+          showWinPopup(hadiah >= bet * 10 ? "💎 BIG WIN!" : "🎉 Kamu Menang!");
+          break;
+        }
+      }
+      if (new Set(data).size === 1) {
+        menang = true;
+        hadiah = bet * 20;
+        showWinPopup("💰 JACKPOT BESAR!!!");
+      }
+      if (menang) {
+        saldo += hadiah;
+        updateSaldo();
+        pesan.innerText = `🎉 Menang! +Rp ${hadiah.toLocaleString('id-ID')}`;
+      } else {
+        pesan.innerText = "😢 Belum beruntung.";
+      }
+    }
+
+    function spin() {
+      const betInput = document.getElementById("bet").value;
+      const bet = parseInt(betInput.replace(/\./g, ''));
+      const forceWin = document.getElementById("forceWin").checked;
+      const winType = document.getElementById("winType").value;
+      if (isNaN(bet) || bet <= 0) return document.getElementById("pesan").innerText = "❌ Masukkan bet valid!";
+      if (saldo < bet) return document.getElementById("pesan").innerText = "❌ Saldo tidak cukup!";
+      saldo -= bet;
+      updateSaldo();
+      document.getElementById("pesan").innerText = "🔄 Memutar...";
+      for (let i = 1; i <= 9; i++) {
+        const slot = document.getElementById("s" + i);
+        slot.innerText = "🎲";
+        slot.classList.add("spin");
+      }
+      setTimeout(() => {
+        let hasil = forceWin ? buildForcedWin(winType) : [];
+        if (!forceWin) {
+          for (let i = 1; i <= 9; i++) {
+            const simbolAcak = simbol[Math.floor(Math.random() * simbol.length)];
+            const slot = document.getElementById("s" + i);
+            slot.innerText = simbolAcak;
+            slot.classList.remove("spin");
+            hasil.push(simbolAcak);
+          }
+        }
+        cekMenang(hasil, bet);
+      }, 1000);
+    }
+
+    updateSaldo();
   </script>
 </body>
 </html>
